@@ -1,0 +1,101 @@
+INPUT:
+3=>No of Days to Survive
+4=>No of cluster
+c1 100 300
+c2 100 300
+c3 100 200
+c4 100 400
+4=>No of Connection
+F_c1
+F_c2
+c2_c3
+c3_c4
+
+OUTPUT:
+1700
+
+//Java Code
+import java.util.*;
+class cluster_details{
+    String name;
+    int daily_need;
+    int max_capacity;
+    int balance;
+    public cluster_details(String name,int daily_need,int max_capacity,int balance){
+        this.name=name;
+        this.daily_need=daily_need;
+        this.max_capacity=max_capacity;
+        this.balance=balance;
+    }
+}
+public class WaterTank{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int days=sc.nextInt();
+        int number_of_cluster=sc.nextInt();
+        sc.nextLine();
+        HashMap <String,cluster_details> cluster_arr=new HashMap<String ,cluster_details>();
+        ArrayList <String> clu=new ArrayList<String>();
+        for(int i=0;i<number_of_cluster;i++){
+            String str=sc.nextLine();
+            String arr[]=str.split(" ");
+            clu.add(arr[0]);
+            cluster_arr.put(arr[0],new cluster_details(arr[0],Integer.parseInt(arr[1]),Integer.parseInt(arr[2]),1));
+        }
+        HashMap <String,String> cluster_connection=new HashMap<String ,String>();
+        int number_of_connection=sc.nextInt();
+        sc.nextLine();
+        int val=1;
+        for(int i=0;i<number_of_connection;i++){
+            String str=sc.nextLine();
+            String arr[]=str.split("_");
+            if(arr[0].equals("F")){
+                arr[0]=arr[0]+val;
+                val++;
+            }
+            cluster_connection.put(arr[0],arr[1]);
+        }
+        ArrayList<ArrayList<String>> al2=new ArrayList<ArrayList<String>>();
+        for(int i=1;i<val;i++){
+            ArrayList<String> al=new ArrayList<String>();
+            String c="F"+i;
+            while(cluster_connection.containsKey(c)){
+                c=cluster_connection.get(c);
+                al.add(c);
+            }
+            al2.add(al);
+        }
+        int sum=0,add=0;
+        for(int i=0;i<val-1;i++){
+            int dum_sum=0;
+            ArrayList <String> temp=new ArrayList<String>(al2.get(i));
+            for(int j=temp.size()-1;j>=0;j--){
+                String value=temp.get(j);
+                int daily=cluster_arr.get(value).daily_need;
+                int capacity=cluster_arr.get(value).max_capacity;
+                int quo=capacity/daily;
+                int bal=cluster_arr.get(value).balance;
+                int key=bal;
+                if(quo<days){
+                    key=key-1;
+                    int n=days-quo;
+                    add=n-key;
+                    if(add>0){
+                        bal=bal+add;
+                    }
+                }
+                cluster_arr.put(value,new cluster_details(cluster_arr.get(value).name,cluster_arr.get(value).daily_need,cluster_arr.get(value).max_capacity,bal));
+                for(int k=0;k<j;k++){
+                    value=temp.get(k);
+                    bal=cluster_arr.get(value).balance;
+                    bal=bal+add;
+                    cluster_arr.put(value,new cluster_details(cluster_arr.get(value).name,cluster_arr.get(value).daily_need,cluster_arr.get(value).max_capacity,bal));
+                }
+            }
+        }
+        for(int i=0;i<clu.size();i++){
+            sum=sum+cluster_arr.get(clu.get(i)).max_capacity*cluster_arr.get(clu.get(i)).balance;
+        }
+        System.out.println(sum);
+    }
+}
