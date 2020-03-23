@@ -1,0 +1,11 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
+public class Main {
+   public static void main(String [] args) throws Exception {
+       SimpleDateFormat res = new SimpleDateFormat("HH:mm:ss");
+       SimpleDateFormat inputtype = new SimpleDateFormat("hh:mm:ss a");
+       String p="10:02:06 PM";
+       Date d = inputtype.parse(p);
+       System.out.println(res.format(d));
+   }
+}
