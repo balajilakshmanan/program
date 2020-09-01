@@ -14,7 +14,6 @@ c3_c4
 OUTPUT:
 1700
 
-//Java Code
 import java.util.*;
 class cluster_details{
     String name;
